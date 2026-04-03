@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mathathon Registration</title>
+    <!-- Tailwind CSS for modern styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Lucide Icons for UI elements -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/lucide-static/0.321.0/lucide.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap');
+        
+        :root {
+            --deep-navy: #181655;
+            --curious-blue: #8FC9BC;
+            --bg-gray: #F0F2F5;
+            --error-red: #ef4444;
+        }
+
+        #app {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background-color: #F0F2F5;
+        }
+
+        body {
+            font-family: 'Helvetica Neue', 'Inter', sans-serif;
+            background-color: var(--bg-gray);
+            color: #333;
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar { width: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: var(--curious-blue); border-radius: 10px; }
+
+        .step-content { display: none; }
+        .step-content.active { display: block; animation: fadeIn 0.4s ease-out; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        input:focus { border-color: var(--curious-blue) !important; }
+        input.error { border-color: var(--error-red) !important; background-color: #fef2f2; }
+        .error-msg { color: var(--error-red); font-size: 10px; margin-top: 4px; font-weight: 600; display: none; }
+        
+        /* Disabled state for the primary CTA */
+        .btn-disabled {
+            background-color: #cbd5e1 !important;
+            cursor: not-allowed;
+            box-shadow: none !important;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="app" class="min-h-screen flex flex-col items-center py-12 px-4">
+        
+        <!-- REGISTRATION FORM VIEW -->
+        <div id="form-view" class="w-full max-w-xl">
+            <!-- Centered Header Section -->
+            <div class="flex flex-col mb-10 items-center text-center">
+                <div class="mb-6">
+                    <img src="mathathon-logo-RGB-black_colour-LARGE (1).png" alt="Mathathon Logo" class="w-[240px] h-auto object-contain mx-auto" onerror="this.style.display='none';">
+                </div>
+                <div>
+                    <div class="inline-block px-4 py-1.5 border text-[10px] font-bold tracking-wider rounded-full shadow-sm mb-4 bg-white" style="border-color: var(--curious-blue); color: var(--deep-navy);">
+                        LEARN TO THINK MATHEMATICALLY
+                    </div>
+                    <h1 class="text-4xl font-black tracking-tighter mb-2" style="color: var(--deep-navy);">Early Bird Registration</h1>
+                    <p class="text-gray-400 text-sm">Secure your slot for the upcoming academic term</p>
+                </div>
+            </div>
+
+            <!-- Card UI Container -->
+            <div class="bg-white rounded-[2.5rem] p-8 md:p-10 shadow-[0_20px_50px_rgba(0,0,0,0.1)] relative border border-white min-h-[520px]">
+                
+                <!-- Progress Indicator (Dots) -->
+                <div class="flex justify-between mb-12 px-2 relative max-w-[200px] mx-auto">
+                    <div class="absolute top-1/2 left-0 w-full h-[2px] bg-gray-100 -translate-y-1/2"></div>
+                    <div id="dot-1" class="w-4 h-4 rounded-full z-10 border-4 border-white transition-all duration-300 scale-125 shadow-lg" style="background-color: var(--curious-blue);"></div>
+                    <div id="dot-2" class="w-4 h-4 rounded-full z-10 border-4 border-white transition-all duration-300 bg-gray-100"></div>
+                    <div id="dot-3" class="w-4 h-4 rounded-full z-10 border-4 border-white transition-all duration-300 bg-gray-100"></div>
+                </div>
+
+                <!-- STEP 1: Parent Information -->
+                <div id="step-1" class="step-content active space-y-6">
+                    <h3 class="text-2xl font-bold tracking-tight mb-2" style="color: var(--deep-navy);">Parent Contact</h3>
+                    <div class="space-y-5">
+                        <div>
+                            <label class="text-[10px] uppercase font-black text-gray-400 mb-2 block tracking-widest">Full Name</label>
+                            <input type="text" id="parentName" placeholder="Enter your name" class="w-full bg-[#F8FAFC] border-2 border-transparent rounded-2xl px-5 py-4 outline-none transition-all">
+                        </div>
+                        <div>
+                            <label class="text-[10px] uppercase font-black text-gray-400 mb-2 block tracking-widest">WhatsApp Number</label>
+                            <input type="tel" id="contact" placeholder="8xxx xxxx" class="w-full bg-[#F8FAFC] border-2 border-transparent rounded-2xl px-5 py-4 outline-none transition-all">
+                            <p id="contact-error" class="error-msg">Please enter a valid 8-digit SG number (starts with 8/9)</p>
+                        </div>
+                        <div>
+                            <label class="text-[10px] uppercase font-black text-gray-400 mb-2 block tracking-widest">Email Address</label>
+                            <input type="email" id="email" placeholder="email@example.com" class="w-full bg-[#F8FAFC] border-2 border-transparent rounded-2xl px-5 py-4 outline-none transition-all">
+                            <p id="email-error" class="error-msg">Please enter a valid email address</p>
+                        </div>
+                        <button id="next-step-1-btn" onclick="validateStep1(true)" class="w-full text-white font-bold py-5 rounded-2xl mt-4 flex items-center justify-center hover:opacity-90 transition-all uppercase tracking-widest text-xs shadow-xl btn-disabled" style="background-color: var(--deep-navy);" disabled>
+                            Select Student Level <i class="lucide-chevron-right ml-2 w-4 h-4"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- STEP 2: Level Selection -->
+                <div id="step-2" class="step-content space-y-6">
+                    <h3 class="text-2xl font-bold tracking-tight" style="color: var(--deep-navy);">Student Level</h3>
+                    <div id="level-list" class="grid grid-cols-1 md:grid-cols-2 gap-3 max-h-[350px] overflow-y-auto pr-2 custom-scrollbar">
+                    </div>
+                    <button onclick="goToStep(1)" class="text-gray-400 text-[10px] font-black uppercase tracking-widest flex items-center hover:text-black mt-4">
+                        <i class="lucide-chevron-left mr-1 w-3 h-3"></i> Previous
+                    </button>
+                </div>
+
+                <!-- STEP 3: Student Specifics -->
+                <div id="step-3" class="step-content space-y-6">
+                    <h3 class="text-2xl font-bold tracking-tight" style="color: var(--deep-navy);">Student Details</h3>
+                    <p class="text-xs text-gray-400">Selected Level: <span id="display-level" class="font-bold text-black">-</span></p>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="text-[10px] uppercase font-black text-gray-400 mb-2 block tracking-widest">Student Name</label>
+                            <input type="text" id="studentName" placeholder="Name" class="w-full bg-[#F8FAFC] border-2 border-transparent rounded-2xl px-5 py-4 outline-none transition-all">
+                        </div>
+                        <div>
+                            <label class="text-[10px] uppercase font-black text-gray-400 mb-2 block tracking-widest">School</label>
+                            <input type="text" id="school" placeholder="School" class="w-full bg-[#F8FAFC] border-2 border-transparent rounded-2xl px-5 py-4 outline-none transition-all">
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="text-[10px] uppercase font-black text-gray-400 mb-4 block tracking-widest">Interested Subject(s)</label>
+                        <div id="subject-list" class="grid grid-cols-1 gap-2">
+                        </div>
+                        <p id="subject-error" class="error-msg">Please select at least one subject</p>
+                    </div>
+
+                    <div class="flex items-center space-x-3 pt-6">
+                        <button onclick="goToStep(2)" class="p-5 border-2 border-gray-100 rounded-2xl hover:border-black transition-all bg-white">
+                            <i class="lucide-chevron-left w-5 h-5"></i>
+                        </button>
+                        <button id="submit-btn" onclick="submitForm()" class="flex-grow text-white font-black py-5 rounded-2xl hover:opacity-90 transition-all shadow-xl uppercase tracking-[0.15em] text-xs disabled:opacity-50" style="background-color: var(--deep-navy);">
+                            Submit Registration
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SUCCESS VIEW -->
+        <div id="success-view" class="hidden w-full max-w-md text-center py-20">
+            <h1 class="text-3xl font-bold" style="color: var(--deep-navy);">Interest Registered!</h1>
+            <p class="text-gray-600 mt-4">Our team will contact you shortly.</p>
+            <button onclick="location.reload()" class="mt-10 text-white px-10 py-4 rounded-full font-bold" style="background-color: var(--deep-navy);">Back to Home</button>
+        </div>
+    </div>
+
+    <script>
+        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzvin7GkLhTMI510tK4R5lGlAS3Gz0ASkp1fuTNRV4GDI7bqVbmBot5A5eCK9cZfTNsxw/exec';
+        let currentStep = 1;
+        let selectedLevel = '';
+        let selectedSubjects = [];
+
+        const levels = [
+            { label: 'Primary 3', category: 'junior' },
+            { label: 'Primary 4', category: 'junior' },
+            { label: 'Primary 5', category: 'junior' },
+            { label: 'Primary 6 (PSLE)', category: 'junior' },
+            { label: 'Secondary 1', category: 'junior' },
+            { label: 'Secondary 2', category: 'junior' },
+            { label: 'Secondary 3', category: 'senior' },
+            { label: 'Secondary 4 (O-Level)', category: 'senior' },
+            { label: 'JC 1', category: 'senior' },
+            { label: 'JC 2 (A-Level)', category: 'senior' },
+        ];
+
+        const subjectsMap = { junior: ['Mathematics', 'Science'], senior: ['Mathematics', 'Physics'] };
+
+        // --- Immediate Validation Logic ---
+
+        function setError(id, isError) {
+            const input = document.getElementById(id);
+            const errorMsg = document.getElementById(id + '-error');
+            if (isError) {
+                input.classList.add('error');
+                if (errorMsg) errorMsg.style.display = 'block';
+            } else {
+                input.classList.remove('error');
+                if (errorMsg) errorMsg.style.display = 'none';
+            }
+        }
+
+        const validators = {
+            parentName: (val) => val.trim().length > 1,
+            contact: (val) => /^[89]\d{7}$/.test(val.trim()),
+            email: (val) => val.trim() === "" || /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val.trim()),
+            studentName: (val) => val.trim().length > 1
+        };
+
+        function validateStep1(shouldMove = false) {
+            const nameVal = document.getElementById('parentName').value;
+            const contactVal = document.getElementById('contact').value;
+            const emailVal = document.getElementById('email').value;
+
+            const nameValid = validators.parentName(nameVal);
+            const contactValid = validators.contact(contactVal);
+            const emailValid = validators.email(emailVal);
+
+            // Update UI for the button
+            const btn = document.getElementById('next-step-1-btn');
+            if (nameValid && contactValid && emailValid) {
+                btn.classList.remove('btn-disabled');
+                btn.disabled = false;
+            } else {
+                btn.classList.add('btn-disabled');
+                btn.disabled = true;
+            }
+
+            if (shouldMove && nameValid && contactValid && emailValid) {
+                goToStep(2);
+            }
+        }
+
+        // Attach listeners for immediate feedback
+        function setupListeners() {
+            const inputs = ['parentName', 'contact', 'email', 'studentName'];
+            
+            inputs.forEach(id => {
+                const el = document.getElementById(id);
+                
+                // When user leaves the field (Blur) - Show error if invalid
+                el.addEventListener('blur', () => {
+                    const isValid = validators[id](el.value);
+                    setError(id, !isValid);
+                });
+
+                // While typing (Input) - Clear error immediately when corrected
+                el.addEventListener('input', () => {
+                    const isValid = validators[id](el.value);
+                    if (isValid) {
+                        setError(id, false);
+                    }
+                    // For Step 1, also update the button state
+                    if (['parentName', 'contact', 'email'].includes(id)) {
+                        validateStep1();
+                    }
+                });
+            });
+        }
+
+        // --- Core Navigation & Functionality ---
+
+        function goToStep(num) {
+            document.querySelectorAll('.step-content').forEach(s => s.classList.remove('active'));
+            document.getElementById(`step-${num}`).classList.add('active');
+            
+            for(let i=1; i<=3; i++) {
+                const dot = document.getElementById(`dot-${i}`);
+                dot.style.backgroundColor = i <= num ? 'var(--curious-blue)' : '#F3F4F6';
+            }
+            currentStep = num;
+        }
+
+        function initLevels() {
+            const list = document.getElementById('level-list');
+            list.innerHTML = levels.map(l => `
+                <button onclick="selectLevel('${l.label}')" class="text-left p-5 rounded-2xl bg-[#F8FAFC] border-2 border-transparent hover:border-gray-200 transition-all flex justify-between items-center">
+                    <span class="text-sm font-bold" style="color: var(--deep-navy);">${l.label}</span>
+                    <i class="lucide-chevron-right w-4 h-4 text-gray-300"></i>
+                </button>
+            `).join('');
+            setupListeners();
+        }
+
+        function selectLevel(label) {
+            selectedLevel = label;
+            selectedSubjects = [];
+            document.getElementById('display-level').innerText = label;
+            const cat = levels.find(l => l.label === label).category;
+            const subs = subjectsMap[cat];
+            
+            document.getElementById('subject-list').innerHTML = subs.map(s => `
+                <button onclick="toggleSubject('${s}', this)" class="subject-btn text-left p-5 rounded-2xl border-2 border-transparent bg-[#F8FAFC] flex items-center justify-between transition-all">
+                    <span class="text-sm font-bold">${s}</span>
+                    <i class="lucide-check-circle-2 w-5 h-5 hidden"></i>
+                </button>
+            `).join('');
+            goToStep(3);
+        }
+
+        function toggleSubject(sub, el) {
+            document.getElementById('subject-error').style.display = 'none';
+            if (selectedSubjects.includes(sub)) {
+                selectedSubjects = selectedSubjects.filter(i => i !== sub);
+                el.classList.remove('text-white');
+                el.style.backgroundColor = '';
+                el.querySelector('i').classList.add('hidden');
+            } else {
+                selectedSubjects.push(sub);
+                el.classList.add('text-white');
+                el.style.backgroundColor = 'var(--curious-blue)';
+                el.querySelector('i').classList.remove('hidden');
+            }
+        }
+
+        async function submitForm() {
+            const studentNameInput = document.getElementById('studentName');
+            const studentName = studentNameInput.value.trim();
+            const submitBtn = document.getElementById('submit-btn');
+            const subError = document.getElementById('subject-error');
+
+            let isValid = true;
+
+            if (!validators.studentName(studentName)) {
+                setError('studentName', true);
+                isValid = false;
+            }
+
+            if (selectedSubjects.length === 0) {
+                subError.style.display = 'block';
+                isValid = false;
+            }
+
+            if (!isValid) return;
+
+            submitBtn.disabled = true;
+            submitBtn.innerText = 'Submitting...';
+
+            const lead = {
+                parentName: document.getElementById('parentName').value,
+                contact: document.getElementById('contact').value,
+                email: document.getElementById('email').value,
+                studentName: studentName,
+                school: document.getElementById('school').value,
+                level: selectedLevel,
+                subjects: selectedSubjects.join(', '),
+                timestamp: new Date().toLocaleString()
+            };
+
+            try {
+                // Using no-cors as per standard Apps Script deployment
+                await fetch(SCRIPT_URL, {
+                    method: 'POST',
+                    mode: 'no-cors', 
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(lead)
+                });
+                document.getElementById('form-view').classList.add('hidden');
+                document.getElementById('success-view').classList.remove('hidden');
+            } catch (e) {
+                alert('Error submitting. Please try again.');
+                submitBtn.disabled = false;
+                submitBtn.innerText = 'Submit Registration';
+            }
+        }
+
+        window.onload = initLevels;
+    </script>
+</body>
+</html>
